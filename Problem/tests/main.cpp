@@ -1,6 +1,5 @@
 
-#include "Driver.h"
-#include "Project1.h"
+#include "Problem.hpp"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -13,9 +12,9 @@ typedef std::chrono::nanoseconds ns_;
 typedef std::uniform_int_distribution<>::param_type param_type;
 
 // Static variable initialization
-std::mt19937 Driver::mtEngine(Driver::RANDOM_SEED);
-std::uniform_real_distribution<double> Driver::realDist(0.0, 1.0);
-std::uniform_int_distribution<int> Driver::intDist(0, 1);		// this will be updated for each function
+//std::mt19937 Driver::mtEngine(Driver::RANDOM_SEED);
+//std::uniform_real_distribution<double> Driver::realDist(0.0, 1.0);
+//std::uniform_int_distribution<int> Driver::intDist(0, 1);		// this will be updated for each function
 
 /// @brief driver for the Project1 class
 /// @return 0

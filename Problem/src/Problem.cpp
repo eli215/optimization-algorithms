@@ -1,6 +1,18 @@
 #include "Problem.hpp"
 
-/// @brief No-arg/parameterized Problem constructor for a specific problem function (has default parameters).
+Problem::Problem()
+{
+    this->functionId = 0;
+    this->lowerBound = 0;
+    this->upperBound = 0;
+    this->dimension = 0;
+    this->objFunc = nullptr;
+
+    this->RANDOM_SEED = 0;
+    this->mtEngine = std::mt19937();
+}
+
+/// @brief Parameterized Problem constructor for a specific problem function.
 /// @param functionId The 0-based ID/index of the problem function.
 /// @param lowerBound The INCLUSIVE lower bound for solution vector values.
 /// @param upperBound The INCLUSIVE upper bound for solution vector values.
@@ -17,15 +29,15 @@ Problem::Problem(int functionId, double lowerBound, double upperBound, int dimen
 	std::random_device rd{};
 	this->RANDOM_SEED = rd();		// generate random seed
 	this->mtEngine = std::mt19937(RANDOM_SEED);
-	this->realDist = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
 /// @brief Generate a pseudo-random solution vector, where dimension and solution space correspond to this Problem object.
 /// @return A pseudo-random solution vector.
-std::vector<double> Problem::generateRandomVector()
+std::vector<double> Problem::generateSolutionVector()
 {
 	std::vector<double> vector(dimension);		// Allocate vector of given dimension size
 	double range = upperBound - lowerBound;		// Calculate statistical range
+    auto realDist = std::uniform_real_distribution<double>(0.0, 1.0);   //
 
 	for (int i = 0; i < dimension; i++)
 	{

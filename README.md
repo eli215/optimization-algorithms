@@ -16,7 +16,7 @@ Problem
 
 - benchmark func definitions
 - internal random number generator
-- represent a problem instance??
+- represent a problem instance
 
 
 FileHandler
