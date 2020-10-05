@@ -11,21 +11,17 @@ typedef std::chrono::time_point<clock_> time_point;
 typedef std::chrono::nanoseconds ns_;
 typedef std::uniform_int_distribution<>::param_type param_type;
 
-// Static variable initialization
-//std::mt19937 Driver::mtEngine(Driver::RANDOM_SEED);
-//std::uniform_real_distribution<double> Driver::realDist(0.0, 1.0);
-//std::uniform_int_distribution<int> Driver::intDist(0, 1);		// this will be updated for each function
 
-/// @brief driver for the Project1 class
+/// @brief Driver for the Problem class.
 /// @return 0
 int main()
 {
 	// Open filestream to write results into
-	std::ofstream resultsFile;
-	resultsFile.precision(3);		// round to 3 decimal places when writing to file
-	resultsFile.open("results.txt");
-	resultsFile << "CS471 - Project 1 - Benchmark Results\n";
-	resultsFile << "--------------------------------------------------";
+	//std::ofstream resultsFile;
+	//resultsFile.precision(3);		// round results to 3 decimal places
+	//resultsFile.open("results.txt");
+	//resultsFile << "CS471 - Project 1 - Benchmark Results\n";
+	//resultsFile << "--------------------------------------------------";
 
 	for (int funInd = 0; funInd < Driver::NUM_FUNCTIONS; funInd++)
 	{

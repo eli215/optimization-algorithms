@@ -3,6 +3,8 @@ Date: 07/20/2020
 CS 471 - Summer 2020
 Project 3 - Differential Evolution
 
+# Differential Evolution
+
 This program runs a differential evolution algorithm over a number of the 18 benchmark functions from Project 1,
 printing the results to output files.
 

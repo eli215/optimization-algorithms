@@ -3,25 +3,21 @@
 
 // Initialize static variables
 std::string FileHandler::INPUT_FILEPATH = "input.txt";
-std::string FileHandler::BS_OUTPUT_FILEPATH = "BS_results.csv";
-std::string FileHandler::LS_OUTPUT_FILEPATH = "LS_results.csv";
+std::string FileHandler::OUTPUT_FILEPATH = "BS_results.csv";
 
 /// @brief No-arg/parameterized FileHandler constructor (has default parameters). Opens input & output files, calls init() for setup.
 /// @param inputFilepath (optional) String containing filepath to the desired input file.
 /// @param BSoutputFilepath (optional) String containing filepath to the desired Blind Search output file (which will be generated).
 /// @param LSoutputFilepath (optional) String containing filepath to the desired Local Search output file (which will be generated).
 /// @return An initialized FileHandler object, which is ready for future calls to nextFunctionBounds().
-FileHandler::FileHandler(std::string inputFilepath, std::string BSoutputFilepath, std::string LSoutputFilepath)
+FileHandler::FileHandler(std::string inputFilepath, std::string outputFilepath)
 {
 	INPUT_FILEPATH = inputFilepath;
-	BS_OUTPUT_FILEPATH = BSoutputFilepath;
-	LS_OUTPUT_FILEPATH = LSoutputFilepath;
+	OUTPUT_FILEPATH = outputFilepath;
 
 	inFile.open(INPUT_FILEPATH);
-	BSoutFile.open(BS_OUTPUT_FILEPATH, std::ios_base::trunc);
-	LSoutFile.open(LS_OUTPUT_FILEPATH, std::ios_base::trunc);
-	BSoutFile << std::setprecision(3) << std::scientific;
-	LSoutFile << std::setprecision(3) << std::scientific;
+	outFile.open(OUTPUT_FILEPATH, std::ios_base::trunc);
+	outFile << std::setprecision(3) << std::scientific;
 
 	init();
 }
@@ -31,8 +27,7 @@ FileHandler::FileHandler(std::string inputFilepath, std::string BSoutputFilepath
 FileHandler::~FileHandler()
 {
 	inFile.close();
-	BSoutFile.close();
-	LSoutFile.close();
+	outFile.close();
 }
 
 /// @brief Perform initial FileHandler setup. Read the first few lines from input file for testing info.
@@ -63,9 +58,9 @@ void FileHandler::init()
 				{
 					ss >> probId;
 					selectedProblems[probId - 1] = true;
-					filePath << 'f' << probId << '_' << LS_OUTPUT_FILEPATH;
-					LSoutFiles[probId - 1] = std::ofstream(filePath.str(), std::ios_base::trunc);
-					LSoutFiles[probId - 1] << "ProblemID,Dimension,Iterations,Time(ms),Fitness" << '\n';	// Print column headers
+					filePath << 'f' << probId << '_' << OUTPUT_FILEPATH;
+					outFiles[probId - 1] = std::ofstream(filePath.str(), std::ios_base::trunc);
+					outFiles[probId - 1] << "ProblemID,Dimension,,Time(ms),Fitness" << '\n';	// Print column headers
 					filePath.str("");		// clear stringstream contents
 				}
 				break;
@@ -78,7 +73,7 @@ void FileHandler::init()
 				while (ss.good())
 				{
 					ss >> numIter;
-					BSiterations.push_back(numIter);
+					iterations.push_back(numIter);
 				}
 				break;
 			case 4:		// Fifth line: scaling parameters for local search
@@ -86,11 +81,11 @@ void FileHandler::init()
 				while (ss.good())
 				{
 					ss >> scaleParam;
-					LSscalingParameters.push_back(scaleParam);
+					//LSscalingParameters.push_back(scaleParam);
 				}
 				break;
 			case 5:		// Sixth line: precision 
-				if (ss.good())	ss >> LSprecision;
+				//if (ss.good())	ss >> LSprecision;
 				break;
 			case 6:		// Seventh line: newline divider
 				break;
@@ -98,8 +93,7 @@ void FileHandler::init()
 	}
 
 	// Print column headings to output files
-	BSoutFile << "ProblemID,Dimension,Iterations,Fitness,Solution" << std::endl;
-	//LSoutFile << "ProblemID,Dimension,Iterations,Fitness,Solution" << std::endl;
+	outFile << "ProblemID,Dimension,Iterations,Fitness,Solution" << std::endl;
 }
 
 /// @brief Read in the next set of solution space bounds from the input file.
@@ -115,19 +109,19 @@ std::array<double, 2> FileHandler::nextFunctionBounds()
 
 /// @brief Write the results of a BlindSearch to the corresponding output file, along with other problem info.
 /// @param bs The BlindSearch object from which we will extract the problem info and search results.
-void FileHandler::writeBSresult(BlindSearch bs)
+void FileHandler::writeResult(BlindSearch bs)
 {
 	Problem problem = bs.getProblem();
 	std::vector<double> solution = bs.getBestSolution();
 
-	BSoutFile << problem.getFunctionId() + 1 << ',' << problem.getDimension() << ',' << bs.getIterations() << ',' << bs.getMinFitness();
+	outFile << problem.getFunctionId() + 1 << ',' << problem.getDimension() << ',' << bs.getIterations() << ',' << bs.getMinFitness();
 
-	BSoutFile << ",{" << solution[0];
+	outFile << ",{" << solution[0];
 	for (int i = 1; i < (int)solution.size(); i++)
 	{
-		BSoutFile << ',' << solution[i];
+		outFile << ',' << solution[i];
 	}
-	BSoutFile << '}' << std::endl;
+	outFile << '}' << std::endl;
 }
 
 /// @brief Write the results of a LocalSearch to the corresponding output file, along with other problem info.

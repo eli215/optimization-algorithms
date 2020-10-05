@@ -3,19 +3,21 @@ Date: 07/31/2020
 CS 471 - Summer 2020
 Project 4 - NEH Heuristic
 
+# NEH Heuristic
+
 This program uses an implementation of the NEH heuristic to solve all 120 of Taillaird's flow shop sequencing problem instances.
 
 Link to Taillard's instances data:
 http://mistic.heig-vd.ch/taillard/problemes.dir/ordonnancement.dir/ordonnancement.html
 
-Description of NEH Heuristic:
+# Description
 The NEH heuristic (Nawas, Enscore, and Ham, 1983) was for many years considered the best heuristic for solving the permutation flow shop problem. This variation of the flow shop problem has a fixed processing order (M_1, M_2, ..., M_m), so the goal is to find the job sequence which minimizes the makespan. This algorithm has a time complexity in O(mn3), where m = # machines and n = # jobs.
 
 The NEH heuristic consists of three steps: 
 1) for each job find the total processing time over all machines, then sort the jobs in decreasing order of these sums; 2) order the first two jobs such that their partial makespan is minimal; 
 3) beginning with this two-job subsequence, add all remaining jobs one at a time, each into the position which minimizes partial makespan. 
 
-Class descriptions:
+# Class descriptions
 
 - main: Contains driver code to exercise the functionality of the NEH class, also making use of the FileHandler class in order load sample FSS problems into the program & print the results.
 

@@ -1,7 +1,9 @@
 Author: Eli Storlie
 Date: 07/10/2020
 CS 471 - Summer 2020
-Project 2 - Blind Search & Local Search
+Project 2 - Local Search
+
+# Local Search
 
 This program runs a number of searches of the 18 benchmark functions from Project 1, and prints the results into output files. Testing parameters are specified in the input file "input.txt" using the format explained below.
 

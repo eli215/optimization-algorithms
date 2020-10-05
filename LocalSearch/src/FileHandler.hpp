@@ -5,9 +5,8 @@
 #include <string>
 #include <array>
 #include <sstream>
-#include "Problem.h"
-#include "BlindSearch.h"
-#include "LocalSearch.h"
+#include "/../../Problem/src/Problem.hpp"
+#include "LocalSearch.hpp"
 
 /// @brief Class which manages file operations. Reads input file, provides testing info to other classes, prints test results to output files.
 class FileHandler

@@ -3,9 +3,8 @@
 Problem::Problem()
 {
     this->functionId = 0;
-    this->lowerBound = 0;
-    this->upperBound = 0;
     this->dimension = 0;
+    this->bounds = {0, 0};
     this->objFunc = nullptr;
 
     this->RANDOM_SEED = 0;
@@ -18,12 +17,11 @@ Problem::Problem()
 /// @param upperBound The INCLUSIVE upper bound for solution vector values.
 /// @param dimension The specified solution vector dimension value.
 /// @return initialized Problem object.
-Problem::Problem(int functionId, double lowerBound, double upperBound, int dimension)//, int maxIterations)
+Problem::Problem(int functionId, int dimension, std::array<double, 2> bounds)
 {
 	this->functionId = functionId;
-	this->lowerBound = lowerBound;
-	this->upperBound = upperBound;
 	this->dimension = dimension;
+	this->bounds = bounds;
 	this->objFunc = functions[functionId];
 
 	std::random_device rd{};
@@ -32,16 +30,18 @@ Problem::Problem(int functionId, double lowerBound, double upperBound, int dimen
 }
 
 /// @brief Generate a pseudo-random solution vector, where dimension and solution space correspond to this Problem object.
+/// @param mtEng The mt19937 object used to generate random values.
+/// @param bounds The INCLUSIVE solution space bounds. [0] = lower bound, [1] = uppder bound.
 /// @return A pseudo-random solution vector.
-std::vector<double> Problem::generateSolutionVector()
+std::vector<double> Problem::generateSolutionVector(std::mt19937 mtEng, int dimension, std::array<double, 2> bounds)
 {
 	std::vector<double> vector(dimension);		// Allocate vector of given dimension size
-	double range = upperBound - lowerBound;		// Calculate statistical range
-    auto realDist = std::uniform_real_distribution<double>(0.0, 1.0);   //
+	double range = bounds[1]- bounds[0];		// Calculate statistical range (upper - lower)
+    auto realDist = std::uniform_real_distribution<double>(0.0, 1.0);   // Real number distribution over range [0.0, 1.0].
 
 	for (int i = 0; i < dimension; i++)
 	{
-		vector[i] = lowerBound + (randReal_0to1() * range);		// Generate & assign random values from within the given bounds
+		vector[i] = bounds[0] + (realDist(mtEng) * range);  // Generate vector of random values within given solution space
 	}
 
 	return vector;
@@ -57,7 +57,7 @@ double Problem::schwefel(std::vector<double>& x)		// #1
 
 	for (int i = 0; i < n; i++)		// for dimension 1 to n
 	{
-		sum += x[i] * sin(sqrt(abs(x[i])));
+		sum += x[i] * sin(sqrt(fabs(x[i])));
 	}
 
 	return (418.9829 * n) - sum;
@@ -105,7 +105,7 @@ double Problem::rastrigin(std::vector<double>& x)		// #4
 
 	for (int i = 0; i < n; i++)
 	{
-		sum += pow(x[i], 2) - 10 * cos(2 * std::_Pi * x[i]);
+		sum += pow(x[i], 2) - 10 * cos(2 * M_PI * x[i]);
 	}
 
 	return (n * 10.0) + sum;
@@ -194,7 +194,7 @@ double Problem::ackleyTwo(std::vector<double>& x)		// #9
 	for (int i = 0; i < n - 1; i++)
 	{
 		sum += 20 + e - (20 / exp(0.2 * sqrt((pow(x[i], 2) + pow(x[i + 1], 2)) / 2)))
-			- exp(0.5 * (cos(2 * std::_Pi * x[i]) + cos(2 * std::_Pi * x[i + 1])));
+			- exp(0.5 * (cos(2 * M_PI * x[i]) + cos(2 * M_PI * x[i + 1])));
 	}
 
 	return sum;
@@ -210,7 +210,7 @@ double Problem::eggHolder(std::vector<double>& x)		// #10
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		sum += -x[i] * sin(sqrt(abs(x[i] - x[i + 1] - 47))) - (x[i + 1] + 47) * sin(sqrt(abs(x[i + 1] + 47 + (x[i] / 2))));
+		sum += -x[i] * sin(sqrt(fabs(x[i] - x[i + 1] - 47))) - (x[i + 1] + 47) * sin(sqrt(fabs(x[i + 1] + 47 + (x[i] / 2))));
 	}
 
 	return sum;
@@ -228,8 +228,8 @@ double Problem::rana(std::vector<double>& x)		// #11
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		expr1 = sqrt(abs(x[i + 1] - x[i] + 1));
-		expr2 = sqrt(abs(x[i + 1] + x[i] + 1));
+		expr1 = sqrt(fabs(x[i + 1] - x[i] + 1));
+		expr2 = sqrt(fabs(x[i + 1] + x[i] + 1));
 		sum += x[i] * sin(expr1) * cos(expr2) + (x[i + 1] + 1) * cos(expr1) * sin(expr2);
 	}
 
@@ -263,7 +263,7 @@ double Problem::michalewicz(std::vector<double>& x)		// #13
 
 	for (int i = 0; i < n; i++)
 	{
-		sum += sin(x[i]) * pow(sin((i * pow(x[i], 2)) / std::_Pi), 20);
+		sum += sin(x[i]) * pow(sin((i * pow(x[i], 2)) / M_PI), 20);
 	}
 
 	return -1 * sum;
@@ -317,10 +317,10 @@ double Problem::levy(std::vector<double>& x)		// #16
 	for (int i = 0; i < n - 1; i++)
 	{
 		wi = 1 + (x[i] - 1) / 4.0;
-		sum += pow(wi - 1, 2) * (1 + 10 * pow(sin(std::_Pi * wi + 1), 2)) + pow(wn - 1, 2) * (1 + pow(sin(2 * std::_Pi * wn), 2));
+		sum += pow(wi - 1, 2) * (1 + 10 * pow(sin(M_PI * wi + 1), 2)) + pow(wn - 1, 2) * (1 + pow(sin(2 * M_PI * wn), 2));
 	}
 
-	return pow(sin(std::_Pi * w1), 2) + sum;
+	return pow(sin(M_PI * w1), 2) + sum;
 }
 
 /// @brief implementation of Step benchmark function
@@ -333,7 +333,7 @@ double Problem::step(std::vector<double>& x)		// #17
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		sum += pow(abs(x[i]) + 0.5, 2);
+		sum += pow(fabs(x[i]) + 0.5, 2);
 	}
 
 	return sum;
@@ -349,7 +349,7 @@ double Problem::alpine(std::vector<double>& x)		// #18
 
 	for (int i = 0; i < n - 1; i++)
 	{
-		sum += abs(x[i] * sin(x[i]) + 0.1 * x[i]);
+		sum += fabs(x[i] * sin(x[i]) + 0.1 * x[i]);
 	}
 
 	return sum;

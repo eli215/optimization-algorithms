@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Problem.hpp"
+#include "../../Problem/src/Problem.hpp"
 
 /// @brief This class contains an implementation of the Differential Evolution algorithm.
 class DifferentialEvolution
