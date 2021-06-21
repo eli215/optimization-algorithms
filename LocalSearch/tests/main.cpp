@@ -2,11 +2,8 @@
 #include "FileHandler.hpp"
 #include "BlindSearch.h"
 #include <chrono>
-// Name: Eli Storlie
-// ID: 40805824
-// Honor code: I pledge that I have neither given nor received
-//				help from anyone other than the instructor for all program components
-//				included here.
+
+
 typedef std::chrono::high_resolution_clock clock_;
 
 int main()

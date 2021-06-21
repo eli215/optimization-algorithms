@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <random>
 #include <array>
+#include <random>
 
 /// @brief Represents the subject of an optimization problem. A Problem object corresponds to a specific
 /// objective function, with a specific solution dimension and solution space.
@@ -58,29 +58,39 @@ public:
 			Problem::levy,
 			Problem::step,
 			Problem::alpine
-	};    /**< A means to enumerate all benchmark functions via function pointers. */
+	};    /**< An enumeration of all benchmark function pointers. */
 
     /*******************************
      * Non-static fields & methods *
      *******************************/
-    Problem();
-    Problem(int functionId, int dimension, std::array<double, 2> bounds);
+	Problem(int functionId = 0, double lowerBound = 0, double upperBound = 0, int dimension = 0);// , int maxIterations = 0);
+	std::vector<double> generateRandomVector();
+
+	/// @brief Generate random real number in range [0.0, 1.0].
+	/// @return random double value in range [0.0, 1.0].
+	inline double randReal_0to1() { return realDist(mtEngine); };
 
     // Getters
     inline int getFunctionId() { return functionId; };
+	inline double getLowerBound()	{ return lowerBound; };
+	inline double getUpperBound()	{ return upperBound; };
     inline int getDimension() { return dimension; };
-    inline std::array<double, 2> getBounds() { return bounds; };
-    inline func* getObjFunc() { return objFunc; };
+    // inline func* getObjFunc() { return objFunc; };
+	inline std::mt19937 getMtEngine() { return mtEngine; };
     inline unsigned long getRandomSeed() { return RANDOM_SEED; };
 
 private:
 
 	int functionId;		/**< The 0-based ID of the problem function. Use this ID as a Problem::functions[] index to retrieve the corresponding function pointer. */
-	func* objFunc;		/**< A function pointer to this objective function. */
+	double lowerBound;		/**< The INCLUSIVE lower bound for solution vector values. */
+	double upperBound;		/**< The INCLUSIVE upper bound for solution vector values. */
 	int dimension;		/**< The specified solution vector dimension value. */
-    std::array<double, 2> bounds;   /**< Problem solution space bounds. [0] = inclusive lower bound, [1] = inclusive upper bound. */
+	
+	// double range;			/**< The statistical range for solution vector values (upperBound - lowerBound). */
+	// double fpOffset;		/**< The floating-point offset for this range. Allows bounds to be real numbers. */
 
 	unsigned long RANDOM_SEED;	/**< The seed used for this instance of mt19937-- allows for reproducible results. */
 	std::mt19937 mtEngine;	/**< Mersenne-Twister pseudo-random number generator. */
+	std::uniform_real_distribution<double> realDist; /**< Real number distribution over the range [0.0, 1.0]. */
 };
 

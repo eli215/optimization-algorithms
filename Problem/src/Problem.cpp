@@ -1,47 +1,33 @@
 #include "Problem.hpp"
 
-Problem::Problem()
-{
-    this->functionId = 0;
-    this->dimension = 0;
-    this->bounds = {0, 0};
-    this->objFunc = nullptr;
-
-    this->RANDOM_SEED = 0;
-    this->mtEngine = std::mt19937();
-}
 
 /// @brief Parameterized Problem constructor for a specific problem function.
 /// @param functionId The 0-based ID/index of the problem function.
 /// @param lowerBound The INCLUSIVE lower bound for solution vector values.
 /// @param upperBound The INCLUSIVE upper bound for solution vector values.
 /// @param dimension The specified solution vector dimension value.
-/// @return initialized Problem object.
-Problem::Problem(int functionId, int dimension, std::array<double, 2> bounds)
+Problem::Problem(int functionId, double lowerBound, double upperBound, int dimension)//, int maxIterations)
 {
 	this->functionId = functionId;
+	this->lowerBound = lowerBound;
+	this->upperBound = upperBound;
 	this->dimension = dimension;
-	this->bounds = bounds;
-	this->objFunc = functions[functionId];
-
-	std::random_device rd{};
-	this->RANDOM_SEED = rd();		// generate random seed
-	this->mtEngine = std::mt19937(RANDOM_SEED);
+	//this->maxIterations = maxIterations;
+	// this->range = upperBound - lowerBound;
+	// this->fpOffset = 0 + (range - (int)range);
+	this->realDist = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
 /// @brief Generate a pseudo-random solution vector, where dimension and solution space correspond to this Problem object.
-/// @param mtEng The mt19937 object used to generate random values.
-/// @param bounds The INCLUSIVE solution space bounds. [0] = lower bound, [1] = uppder bound.
 /// @return A pseudo-random solution vector.
-std::vector<double> Problem::generateSolutionVector(std::mt19937 mtEng, int dimension, std::array<double, 2> bounds)
+std::vector<double> Problem::generateRandomVector()
 {
 	std::vector<double> vector(dimension);		// Allocate vector of given dimension size
-	double range = bounds[1]- bounds[0];		// Calculate statistical range (upper - lower)
-    auto realDist = std::uniform_real_distribution<double>(0.0, 1.0);   // Real number distribution over range [0.0, 1.0].
+	double range = upperBound - lowerBound;		// Calculate statistical range
 
 	for (int i = 0; i < dimension; i++)
 	{
-		vector[i] = bounds[0] + (realDist(mtEng) * range);  // Generate vector of random values within given solution space
+		vector[i] = lowerBound + (randReal_0to1() * range);		// Generate & assign random values from within the given bounds
 	}
 
 	return vector;
@@ -105,7 +91,7 @@ double Problem::rastrigin(std::vector<double>& x)		// #4
 
 	for (int i = 0; i < n; i++)
 	{
-		sum += pow(x[i], 2) - 10 * cos(2 * M_PI * x[i]);
+		sum += pow(x[i], 2) - 10 * cos(2 * std::_Pi * x[i]);
 	}
 
 	return (n * 10.0) + sum;
@@ -194,7 +180,7 @@ double Problem::ackleyTwo(std::vector<double>& x)		// #9
 	for (int i = 0; i < n - 1; i++)
 	{
 		sum += 20 + e - (20 / exp(0.2 * sqrt((pow(x[i], 2) + pow(x[i + 1], 2)) / 2)))
-			- exp(0.5 * (cos(2 * M_PI * x[i]) + cos(2 * M_PI * x[i + 1])));
+			- exp(0.5 * (cos(2 * std::_Pi * x[i]) + cos(2 * std::_Pi * x[i + 1])));
 	}
 
 	return sum;
@@ -263,7 +249,7 @@ double Problem::michalewicz(std::vector<double>& x)		// #13
 
 	for (int i = 0; i < n; i++)
 	{
-		sum += sin(x[i]) * pow(sin((i * pow(x[i], 2)) / M_PI), 20);
+		sum += sin(x[i]) * pow(sin((i * pow(x[i], 2)) / std::_Pi), 20);
 	}
 
 	return -1 * sum;
@@ -317,10 +303,10 @@ double Problem::levy(std::vector<double>& x)		// #16
 	for (int i = 0; i < n - 1; i++)
 	{
 		wi = 1 + (x[i] - 1) / 4.0;
-		sum += pow(wi - 1, 2) * (1 + 10 * pow(sin(M_PI * wi + 1), 2)) + pow(wn - 1, 2) * (1 + pow(sin(2 * M_PI * wn), 2));
+		sum += pow(wi - 1, 2) * (1 + 10 * pow(sin(std::_Pi * wi + 1), 2)) + pow(wn - 1, 2) * (1 + pow(sin(2 * std::_Pi * wn), 2));
 	}
 
-	return pow(sin(M_PI * w1), 2) + sum;
+	return pow(sin(std::_Pi * w1), 2) + sum;
 }
 
 /// @brief implementation of Step benchmark function

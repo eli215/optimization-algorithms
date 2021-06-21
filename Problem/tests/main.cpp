@@ -1,5 +1,5 @@
-
 #include "Problem.hpp"
+#include "FileHandler.hpp"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -16,16 +16,26 @@ typedef std::uniform_int_distribution<>::param_type param_type;
 /// @return 0
 int main()
 {
+	FileHandler file;
 	// Open filestream to write results into
 	//std::ofstream resultsFile;
 	//resultsFile.precision(3);		// round results to 3 decimal places
 	//resultsFile.open("results.txt");
-	//resultsFile << "CS471 - Project 1 - Benchmark Results\n";
 	//resultsFile << "--------------------------------------------------";
 
-	for (int funInd = 0; funInd < Driver::NUM_FUNCTIONS; funInd++)
+	// TODO:
+	// - Re-create input file as JSON; utilize rapidjson library to parse input
+	// --- this means updating FileHandlers
+	// - Continue cleaning this file up, drawing from the other Problem implementations and
+	// making improvements where possible
+	// - Ensure Problem can be easily re-used; consider changing folder structure (for imports)
+
+	for (int funcId = 0; funcId < Problem::NUM_FUNCTIONS; funcId++)		// for each problem function
 	{
-		Driver::func* function = Driver::functions[funInd];		// ptr to current function
+		std::array<double, 2> solBounds = file.nextFunctionBounds();		// get solution bounds for this problem
+
+		Problem::func* function = Problem::functions[funcId];	// ptr to current function
+		// <-- left off 2021-06-21
 		bool firstCall = true;		// flag for executing a warm-up call
 		resultsFile << "Function #" << (funInd + 1) << "\n";
 

@@ -107,6 +107,7 @@ std::array<double, 2> FileHandler::nextFunctionBounds()
 	return bounds;
 }
 
+// TODO: make writeResult() polymorphic
 /// @brief Write the results of a BlindSearch to the corresponding output file, along with other problem info.
 /// @param bs The BlindSearch object from which we will extract the problem info and search results.
 void FileHandler::writeResult(BlindSearch bs)

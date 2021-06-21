@@ -3,7 +3,7 @@
 This is a collection of optimization problems that were originally part of my coursework.
 My goal now is to expand upon the algorithms, improve code modularity, add more testing, and add data analysis and visualization of the results.
   
-Status: in progress (as of 10/2020)
+Status: in progress (as of 2021-06)
 
 ## Contents
 
